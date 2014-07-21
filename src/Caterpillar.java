@@ -159,24 +159,32 @@ public class Caterpillar {
 			if(p.isDirInX) {
 				/* wave in y-direction*/
 				// element in even index number of the body
-				if(i%2 == 0) {
+				if(i%4 == 0) {
 					g.fillOval(5 + segSize * p.x, 
 							15 + segSize * p.y + ((2*((CaterpillarGame.drawCount+1)%2))-1)*gap, 
 							segSize, segSize);
 				} 
 				// element in odd index number of the body
-				else {
+				else if(i%2 != 0) {
+					g.fillOval(5 + segSize * p.x, 
+							15 + segSize * p.y, 
+							segSize, segSize);
+				} else {
 					g.fillOval(5 + segSize * p.x, 
 							15 + segSize * p.y + ((2*(CaterpillarGame.drawCount%2))-1)*gap, 
 							segSize, segSize);
 				}
 			} else {
 				/* wave in x-direction*/
-				if(i%2 == 0) {
+				if(i%4 == 0) {
 					g.fillOval(5 + segSize * p.x + ((2*((CaterpillarGame.drawCount+1)%2))-1)*gap, 
 							15 + segSize * p.y, 
 							segSize, segSize);
-				}else {
+				} else if (i%2 != 0) {
+					g.fillOval(5 + segSize * p.x, 
+							15 + segSize * p.y, 
+							segSize, segSize);
+				} else {
 					g.fillOval(5 + segSize * p.x + ((2*(CaterpillarGame.drawCount%2))-1)*gap, 
 							15 + segSize * p.y, 
 							segSize, segSize);
