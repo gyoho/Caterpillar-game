@@ -16,7 +16,8 @@ public class CaterpillarGame extends Frame {
 	final static int BoardWidth = 60;
 	final static int BoardHeight = 40;
 	final static int SegmentSize = 10;
-	final static int SLEEP_TIME = 100;
+	final static int SLEEP_TIME = 200;
+	static int drawCount = 0;
 	
 	private Caterpillar playerOne = new Caterpillar (Color.blue, new Point(20, 10));
 	private Caterpillar playerTwo = new Caterpillar (Color.red, new Point(20, 30));
@@ -49,7 +50,8 @@ public class CaterpillarGame extends Frame {
 			repaint();
 			try {
 				Thread.sleep(SLEEP_TIME);
-			} catch(Exception e) {} 
+			} catch(Exception e) {}
+			drawCount++;
 		}
 	}
 	

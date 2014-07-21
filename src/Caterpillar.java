@@ -13,7 +13,10 @@ public class Caterpillar {
 	private Color color;
 	private int score = 0;
 	private int lifeTime = 20;
+	private int segSize = CaterpillarGame.SegmentSize;
+	private int gap = CaterpillarGame.SegmentSize/10;
 	private boolean isScored = false;
+	private int dirChangeCount = 0;
 	// headPos == head headPos
 	// set headPos to property in order to reference and update in methods
 	private Point headPos;
@@ -25,7 +28,7 @@ public class Caterpillar {
 		color = c;
 		// ten circles represents a body
 		for (int i=0; i<10; i++) {
-			headPos = new Point(sp.x + i, sp.y);
+			headPos = new CaterpillarPosition(sp.x + i, sp.y);
 			body.add(headPos);
 		}
 	}
@@ -59,9 +62,16 @@ public class Caterpillar {
 			commands.remove();
 			
 			// if try to move opposite direction, ignore the command
-			if(!isOppositeDir(c))
+			// otherwise, the caterpillar will stop moving
+			if(!isOppositeDir(c)) {
+				// also if not the same direction, then the direction is changed
+				if(c != direction) {
+					// set the joint number with direction changed count
+					dirChangeCount++;
+				}
 				direction = c.charValue();	// Character wrapper to char
-			
+			}
+
 			// quit command
 			if (direction == 'Z')
 				System.exit(0);
@@ -119,7 +129,12 @@ public class Caterpillar {
 		else if (direction == 'S')
 			y++;
 		
-		return new Point(x, y);
+		// direction is in x-axis
+		if(dirChangeCount%2==0)
+			return new CaterpillarPosition(x, y);
+		
+		// direction is in Y-axis
+		return new CaterpillarPosition(x, y, false);
 	}
 	
 	// test if a caterpillar's head is hitting its body
@@ -135,16 +150,38 @@ public class Caterpillar {
 		
 	public void drawSelf(Graphics g) {	
 		g.setColor(color);
-		ListIterator itr = ((LinkedList) body).listIterator();
-	
-		// iterator stuff
-		// 15: height of title
-		while (itr.hasNext()) {
-			Point p = (Point) itr.next();
-			g.fillOval(5 + CaterpillarGame.SegmentSize * p.x, 
-						15 + CaterpillarGame.SegmentSize * p.y, 
-						CaterpillarGame.SegmentSize, 
-						CaterpillarGame.SegmentSize);
+		
+		 // 2*(CaterpillarGame.drawCount%2))-1 ==> switch the sign according with the draw count
+		for(int i=0; i<body.size(); i++) {
+			CaterpillarPosition p = (CaterpillarPosition) ((LinkedList) body).get(i);
+			
+			// check segment is in which direction
+			if(p.isDirInX) {
+				/* wave in y-direction*/
+				// element in even index number of the body
+				if(i%2 == 0) {
+					g.fillOval(5 + segSize * p.x, 
+							15 + segSize * p.y + ((2*((CaterpillarGame.drawCount+1)%2))-1)*gap, 
+							segSize, segSize);
+				} 
+				// element in odd index number of the body
+				else {
+					g.fillOval(5 + segSize * p.x, 
+							15 + segSize * p.y + ((2*(CaterpillarGame.drawCount%2))-1)*gap, 
+							segSize, segSize);
+				}
+			} else {
+				/* wave in x-direction*/
+				if(i%2 == 0) {
+					g.fillOval(5 + segSize * p.x + ((2*((CaterpillarGame.drawCount+1)%2))-1)*gap, 
+							15 + segSize * p.y, 
+							segSize, segSize);
+				}else {
+					g.fillOval(5 + segSize * p.x + ((2*(CaterpillarGame.drawCount%2))-1)*gap, 
+							15 + segSize * p.y, 
+							segSize, segSize);
+				}
+			}
 		}
 	}
 }
